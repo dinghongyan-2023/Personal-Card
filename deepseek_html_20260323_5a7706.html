@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>我的个人名片 | 姓名 & 邮箱</title>
+    <!-- 使用干净现代的字体，提升阅读体验 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <!-- Font Awesome 6 (免费图标库，用于装饰邮箱/用户图标) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #f5f7fc 0%, #e9eef4 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
+            padding: 1.5rem;
+        }
+
+        /* 主卡片容器 */
+        .card {
+            max-width: 620px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(0px);
+            border-radius: 2.5rem;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.25), 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: transform 0.25s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 35px 50px -18px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 装饰头部 */
+        .hero {
+            background: linear-gradient(135deg, #1A2A3F 0%, #0F1A2A 100%);
+            padding: 2rem 2rem 1.8rem 2rem;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, #3b82f6, #a855f7, #ec489a);
+        }
+
+        .avatar-icon {
+            background: rgba(255, 255, 255, 0.15);
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            backdrop-filter: blur(4px);
+            font-size: 2.8rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+            word-break: break-word;
+        }
+
+        .hero-tag {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 0.5rem;
+            font-weight: 400;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255,255,255,0.1);
+            padding: 0.3rem 0.9rem;
+            border-radius: 40px;
+            backdrop-filter: blur(2px);
+        }
+
+        /* 内容区域 */
+        .info-section {
+            padding: 2rem 2rem 1.8rem 2rem;
+            background: #ffffff;
+        }
+
+        /* 每个信息行 */
+        .info-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.8rem;
+            background: #f8fafd;
+            padding: 1rem 1.2rem;
+            border-radius: 1.5rem;
+            transition: background 0.2s, box-shadow 0.2s;
+            border: 1px solid #eef2f8;
+        }
+
+        .info-row:hover {
+            background: #ffffff;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.03);
+            border-color: #dce5ef;
+        }
+
+        .icon-badge {
+            width: 48px;
+            height: 48px;
+            background: #eef3fc;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            color: #1e3a5f;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+
+        .info-row:hover .icon-badge {
+            background: #e0eaff;
+            color: #0f2b44;
+            transform: scale(1.02);
+        }
+
+        .info-content {
+            flex: 1;
+        }
+
+        .info-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            color: #5b6e8c;
+            margin-bottom: 0.25rem;
+        }
+
+        .info-value {
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: #0a1c2f;
+            word-break: break-all;
+            line-height: 1.3;
+        }
+
+        /* 邮箱专用区域增加复制按钮 */
+        .email-copy-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .copy-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            background: #eef2f8;
+            padding: 0.5rem 0.9rem;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #2c4b75;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: inherit;
+            backdrop-filter: blur(2px);
+        }
+
+        .copy-btn i {
+            font-size: 0.85rem;
+        }
+
+        .copy-btn:hover {
+            background: #1e3a5f;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .copy-btn:active {
+            transform: scale(0.97);
+        }
+
+        /* 复制反馈toast提示 */
+        .toast-msg {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) scale(0.9);
+            background: #1f2e3e;
+            color: white;
+            padding: 0.7rem 1.4rem;
+            border-radius: 60px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.2s, transform 0.2s;
+            pointer-events: none;
+            z-index: 1000;
+            backdrop-filter: blur(8px);
+            background: rgba(15, 25, 40, 0.9);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            font-family: 'Inter', monospace;
+            letter-spacing: 0.3px;
+        }
+
+        .toast-msg.show {
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
+        }
+
+        /* 底部装饰或二次确认 */
+        .footer-note {
+            padding: 0.8rem 2rem 1.6rem 2rem;
+            background: #ffffff;
+            border-top: 1px solid #edf2f7;
+            font-size: 0.75rem;
+            text-align: center;
+            color: #7f8fa4;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-note span i {
+            margin-right: 4px;
+            font-size: 0.7rem;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 500px) {
+            .card {
+                border-radius: 1.8rem;
+            }
+            .info-value {
+                font-size: 1.1rem;
+            }
+            .info-row {
+                padding: 0.8rem 1rem;
+            }
+            .hero h1 {
+                font-size: 1.5rem;
+            }
+            .avatar-icon {
+                width: 64px;
+                height: 64px;
+                font-size: 2.2rem;
+            }
+            .info-section {
+                padding: 1.5rem;
+            }
+            .email-copy-wrapper {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .copy-btn {
+                align-self: flex-start;
+                margin-top: 6px;
+            }
+        }
+
+        /* 简易暗色模式支持（跟随系统，可选提升体验） */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: linear-gradient(145deg, #121826 0%, #0e141f 100%);
+            }
+            .card {
+                background: rgba(30, 38, 50, 0.98);
+                border-color: rgba(255, 255, 255, 0.08);
+            }
+            .info-section {
+                background: #1e2632;
+            }
+            .info-row {
+                background: #2a3342;
+                border-color: #3a4457;
+            }
+            .info-row:hover {
+                background: #313d50;
+                border-color: #4b5a72;
+            }
+            .info-value {
+                color: #eef2fc;
+            }
+            .info-label {
+                color: #9aaec9;
+            }
+            .icon-badge {
+                background: #2f3b4e;
+                color: #cbdffc;
+            }
+            .copy-btn {
+                background: #2f3b4e;
+                color: #e2eaff;
+            }
+            .copy-btn:hover {
+                background: #4c6382;
+                color: white;
+            }
+            .footer-note {
+                background: #1e2632;
+                border-top-color: #2f3a48;
+                color: #8fa0bc;
+            }
+            .hero {
+                background: linear-gradient(135deg, #0b1622 0%, #030a15 100%);
+            }
+            .toast-msg {
+                background: rgba(20, 30, 45, 0.95);
+                color: #f0f3fa;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="hero">
+        <div class="avatar-icon">
+            <i class="fas fa-user-circle"></i>
+        </div>
+        <h1 id="displayName">张逸轩</h1>
+        <div class="hero-tag">
+            <i class="fas fa-id-card"></i> 个人数字名片
+        </div>
+    </div>
+
+    <div class="info-section">
+        <!-- 姓名行 (显式展示，与hero呼应但结构化更清楚) -->
+        <div class="info-row">
+            <div class="icon-badge">
+                <i class="fas fa-user-astronaut"></i>
+            </div>
+            <div class="info-content">
+                <div class="info-label">全名 / FULL NAME</div>
+                <div class="info-value" id="fullNameValue">张逸轩</div>
+            </div>
+        </div>
+
+        <!-- 邮箱行 + 复制功能 -->
+        <div class="info-row">
+            <div class="icon-badge">
+                <i class="fas fa-envelope"></i>
+            </div>
+            <div class="info-content">
+                <div class="info-label">电子邮箱 / EMAIL</div>
+                <div class="email-copy-wrapper">
+                    <div class="info-value" id="emailValue">zhang.yixuan@example.com</div>
+                    <button class="copy-btn" id="copyEmailBtn" aria-label="复制邮箱地址">
+                        <i class="far fa-copy"></i> 复制
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 额外增加一个“联系建议”或者个性说明，让页面更完整 (可选) -->
+        <div class="info-row">
+            <div class="icon-badge">
+                <i class="fas fa-globe"></i>
+            </div>
+            <div class="info-content">
+                <div class="info-label">即时联系</div>
+                <div class="info-value" style="font-size:0.95rem; font-weight: 500;">
+                    点击邮箱旁的复制按钮，快速分享地址
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-note">
+        <span><i class="fas fa-check-circle"></i> 身份信息已验证</span>
+        <span><i class="far fa-clock"></i> 名片可随时更新</span>
+    </div>
+</div>
+
+<!-- 复制反馈浮层 -->
+<div id="toastMsg" class="toast-msg">📋 已复制邮箱地址</div>
+
+<script>
+    // --------------------------------------------------------------
+    // 自定义配置区域 —— 在这里修改您的姓名和邮箱，网页将自动更新
+    // --------------------------------------------------------------
+    const MY_INFO = {
+        name: "陈敏熙",        // 👤 请将这里修改为您的真实姓名 (支持中文/英文)
+        email: "minxi.chen@dev.me"   // 📧 请将这里修改为您的真实邮箱地址
+    };
+    // 注意：如果希望保持默认示例展示，请替换上面双引号内的内容即可。
+    // 页面加载后会动态渲染所有姓名和邮箱字段。
+    // --------------------------------------------------------------
+
+    // DOM 元素
+    const heroNameEl = document.getElementById('displayName');
+    const fullNameValueEl = document.getElementById('fullNameValue');
+    const emailValueEl = document.getElementById('emailValue');
+    const copyBtn = document.getElementById('copyEmailBtn');
+    const toastMsg = document.getElementById('toastMsg');
+
+    // 更新所有姓名/邮箱显示
+    function updatePersonalInfo() {
+        // 从配置对象获取姓名和邮箱
+        let userName = MY_INFO.name.trim();
+        let userEmail = MY_INFO.email.trim();
+
+        // 防止意外空值，如果未提供合法姓名则给友好占位，但通常用户会填写
+        if (userName === "") {
+            userName = "访客用户";
+            console.warn("姓名未设置，使用默认占位");
+        }
+        if (userEmail === "") {
+            userEmail = "暂无邮箱";
+            console.warn("邮箱未设置，使用占位提示");
+        }
+
+        // 更新头部大标题
+        if (heroNameEl) heroNameEl.innerText = userName;
+        // 更新信息区域的姓名
+        if (fullNameValueEl) fullNameValueEl.innerText = userName;
+        // 更新邮箱区域
+        if (emailValueEl) emailValueEl.innerText = userEmail;
+
+        // 额外细节：如果邮箱是“暂无邮箱”则禁用复制按钮或调整文案
+        if (userEmail === "暂无邮箱" || userEmail === "") {
+            if (copyBtn) {
+                copyBtn.disabled = true;
+                copyBtn.style.opacity = "0.5";
+                copyBtn.style.cursor = "not-allowed";
+                copyBtn.title = "邮箱地址无效，无法复制";
+                copyBtn.innerHTML = '<i class="fas fa-ban"></i> 不可复制';
+            }
+        } else {
+            if (copyBtn) {
+                copyBtn.disabled = false;
+                copyBtn.style.opacity = "1";
+                copyBtn.style.cursor = "pointer";
+                copyBtn.innerHTML = '<i class="far fa-copy"></i> 复制';
+                copyBtn.title = "复制邮箱地址";
+            }
+        }
+    }
+
+    // 复制邮箱功能 + 优雅提示
+    function copyEmailToClipboard() {
+        const email = emailValueEl ? emailValueEl.innerText : '';
+        // 有效性检查：不能为空，并且不能是占位提示或者无效文本
+        if (!email || email === "暂无邮箱" || email === "") {
+            showToast("❌ 没有可复制的邮箱地址", 1800);
+            return;
+        }
+
+        // 使用现代 Clipboard API，并降级处理
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(email).then(() => {
+                showToast(`✨ 已复制: ${email}`, 1600);
+                // 添加临时动画反馈给按钮
+                if (copyBtn) {
+                    const originalText = copyBtn.innerHTML;
+                    copyBtn.innerHTML = '<i class="fas fa-check"></i> 已复制';
+                    setTimeout(() => {
+                        if (copyBtn && !copyBtn.disabled) {
+                            copyBtn.innerHTML = originalText;
+                        } else if (copyBtn && copyBtn.disabled) {
+                            // 如果禁用状态就不还原成复制，保留不可复制样式
+                            if (email === "暂无邮箱") copyBtn.innerHTML = '<i class="fas fa-ban"></i> 不可复制';
+                            else copyBtn.innerHTML = '<i class="far fa-copy"></i> 复制';
+                        }
+                    }, 1500);
+                }
+            }).catch(err => {
+                console.error('复制失败: ', err);
+                fallbackCopyEmail(email);
+            });
+        } else {
+            fallbackCopyEmail(email);
+        }
+    }
+
+    // 降级复制方案 (使用 textarea)
+    function fallbackCopyEmail(email) {
+        const textarea = document.createElement('textarea');
+        textarea.value = email;
+        textarea.style.position = 'fixed';
+        textarea.style.top = '-9999px';
+        textarea.style.left = '-9999px';
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        const success = false;
+        try {
+            const successful = document.execCommand('copy');
+            if (successful) {
+                showToast(`📧 已复制邮箱: ${email}`, 1600);
+            } else {
+                showToast('⚠️ 手动复制失败，请长按邮箱', 1800);
+            }
+        } catch (err) {
+            console.warn('execCommand 复制失败', err);
+            showToast('❌ 无法自动复制，请手动选择邮箱', 2000);
+        }
+        document.body.removeChild(textarea);
+    }
+
+    // 显示toast提示
+    let toastTimeout = null;
+    function showToast(message, duration = 2000) {
+        if (!toastMsg) return;
+        // 清除之前的timeout，防止重叠
+        if (toastTimeout) {
+            clearTimeout(toastTimeout);
+            toastMsg.classList.remove('show');
+        }
+        toastMsg.textContent = message;
+        toastMsg.classList.add('show');
+        toastTimeout = setTimeout(() => {
+            toastMsg.classList.remove('show');
+            toastTimeout = null;
+        }, duration);
+    }
+
+    // 初始化附加特性: 通过双击邮箱区域也可以复制 (提升用户体验)
+    function addExtraCopyListener() {
+        const emailContainer = emailValueEl;
+        if (emailContainer) {
+            // 双击邮箱文本复制（方便移动端/桌面）
+            emailContainer.addEventListener('dblclick', function(e) {
+                e.stopPropagation();
+                const emailText = emailValueEl.innerText;
+                if (emailText && emailText !== "暂无邮箱") {
+                    copyEmailToClipboard();
+                    showToast(`🔁 双击复制: ${emailText}`, 1200);
+                } else {
+                    showToast("无效邮箱，无法复制", 1200);
+                }
+            });
+            // 增加一点提示样式，显示可双击
+            emailContainer.style.cursor = "copy";
+            emailContainer.title = "双击复制邮箱";
+        }
+    }
+
+    // 额外的装饰: 若用户想从控制台动态修改个人信息（可选高级功能）
+    // 但我们保证页面加载时显示用户预设的姓名和邮箱，同时提供可维护的配置区域。
+    // 为了灵活性，可以暴露一个全局更新方法（如果需要在开发者工具里调试）
+    window.updateMyCard = function(newName, newEmail) {
+        if (newName !== undefined && typeof newName === 'string') MY_INFO.name = newName.trim();
+        if (newEmail !== undefined && typeof newEmail === 'string') MY_INFO.email = newEmail.trim();
+        updatePersonalInfo();
+        showToast("🔄 名片信息已更新", 1500);
+    };
+
+    // 监听DOM加载完成执行
+    document.addEventListener('DOMContentLoaded', () => {
+        // 确保配置生效，更新全部界面
+        updatePersonalInfo();
+
+        // 绑定复制按钮事件
+        if (copyBtn) {
+            copyBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                copyEmailToClipboard();
+            });
+        }
+
+        // 增加双击复制邮箱的便利性
+        addExtraCopyListener();
+
+        // 小彩蛋：控制台输出欢迎信息
+        console.log(`✨ 个人名片已启动 | 当前主人: ${MY_INFO.name} | 联系邮箱: ${MY_INFO.email}`);
+        console.log('💡 提示: 如需修改信息，可以直接编辑代码开头的 MY_INFO 对象，或者调用 window.updateMyCard("新姓名","新邮箱")');
+    });
+</script>
+</body>
+</html>
